@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  wishes    Wish[]
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+model Wish {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  link        String?
+  priority    Priority
+  isCompleted Boolean  @default(false)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("wishes")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
